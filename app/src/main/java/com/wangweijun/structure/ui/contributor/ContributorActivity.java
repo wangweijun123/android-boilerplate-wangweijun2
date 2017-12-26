@@ -55,12 +55,11 @@ public class ContributorActivity extends BaseActivity implements BlacklistMvpVie
         recyclerView.setAdapter(blacklistAdapter);
 
         blacklistPresenter.attachView(this);
-        blacklistPresenter.load2();
+        blacklistPresenter.loadContributorsFromFileAndNetwork();
     }
 
     @OnClick(R.id.query_db)
     public void queryBtn() {
-
         blacklistPresenter.loadContributorsFromDBOnly();
     }
 

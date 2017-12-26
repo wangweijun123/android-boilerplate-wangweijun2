@@ -131,7 +131,7 @@ public class ContributorPresenter extends BasePresenter<BlacklistMvpView> {
      * 2 网络加载,更新数据库(io)
      * 3 更新UI
      */
-    public void load() {
+    public void loadContributorsFromDatabaseAndNetwork() {
         mDataManager.loadContributorsFromDB()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -179,11 +179,11 @@ public class ContributorPresenter extends BasePresenter<BlacklistMvpView> {
 
 
     /**
-     * 1 读取数据库缓存(io)，返回显示缓存(ui)
-     * 2 网络加载,更新数据库(io)
+     * 1 读取文件缓存(io)，返回显示缓存(ui)
+     * 2 网络加载,更新文件(io)
      * 3 更新UI
      */
-    public void load2() {
+    public void loadContributorsFromFileAndNetwork() {
         mDataManager.loadContributorsFromInnerFile()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

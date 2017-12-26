@@ -177,7 +177,7 @@ public class DataManager {
                 if (cacheList != null) {
                     Log.i("wang", "cacheList size :"+cacheList.size());
                 }
-                emitter.onNext(cacheList);
+                emitter.onNext(cacheList);// 不能为NULL,不然会回调error
                 emitter.onComplete();
             }
         });

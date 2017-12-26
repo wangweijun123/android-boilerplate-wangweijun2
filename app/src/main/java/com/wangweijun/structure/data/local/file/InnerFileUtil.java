@@ -30,7 +30,6 @@ public class InnerFileUtil {
         }
     }
 
-
     String key = "xxx";
     public void write(List<Contributor> contributors) {
         ObjectOutputStream oos = null;
@@ -45,7 +44,6 @@ public class InnerFileUtil {
             }
             oos = new ObjectOutputStream(new FileOutputStream(file));
             oos.writeObject(contributors);
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException ex) {
@@ -67,13 +65,12 @@ public class InnerFileUtil {
         List<Contributor> contributors = new ArrayList<>();
         try {
             File cacheFile = new File(cacheDir, key);
-
-            if (!cacheFile.exists()) return null;
-
-            oos = new ObjectInputStream(new FileInputStream(cacheFile));
-            List<Contributor> list = (List<Contributor>)oos.readObject();
-            if (list != null && list.size() > 0) {
-                contributors.addAll(list);
+            if (cacheFile.exists()) {
+                oos = new ObjectInputStream(new FileInputStream(cacheFile));
+                List<Contributor> list = (List<Contributor>)oos.readObject();
+                if (list != null && list.size() > 0) {
+                    contributors.addAll(list);
+                }
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
