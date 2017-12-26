@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.wangweijun.structure.data.DataManager;
 import com.wangweijun.structure.data.local.db.DaoSession;
+import com.wangweijun.structure.data.local.file.InnerFileUtil;
 import com.wangweijun.structure.data.local.pref.PreferencesHelper;
 import com.wangweijun.structure.data.remote.GithubService;
 import com.wangweijun.structure.data.remote.StoreService;
@@ -27,4 +28,5 @@ public interface ApplicationComponent {
     Context provideContext();// 告诉依赖组件自己能提供什么样的实例
     PreferencesHelper providePreferencesHelper(); //告诉依赖组件自己能提供什么样的实例
     DaoSession provideDaoSession();//告诉依赖组件自己能提供什么样的实例
+    InnerFileUtil provideInnerFileUtil();
 }

@@ -55,7 +55,7 @@ public class ContributorActivity extends BaseActivity implements BlacklistMvpVie
         recyclerView.setAdapter(blacklistAdapter);
 
         blacklistPresenter.attachView(this);
-        blacklistPresenter.load();
+        blacklistPresenter.load2();
     }
 
     @OnClick(R.id.query_db)

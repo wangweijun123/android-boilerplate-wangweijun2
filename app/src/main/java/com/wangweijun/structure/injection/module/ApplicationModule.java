@@ -7,6 +7,7 @@ import com.wangweijun.structure.data.local.db.DaoMaster;
 import com.wangweijun.structure.data.local.db.DaoSession;
 import com.wangweijun.structure.data.local.db.DbOpenHelper;
 import com.wangweijun.structure.data.local.db.MigrationHelper;
+import com.wangweijun.structure.data.local.file.InnerFileUtil;
 import com.wangweijun.structure.data.local.pref.PreferencesHelper;
 import com.wangweijun.structure.data.remote.GithubService;
 import com.wangweijun.structure.data.remote.StoreService;
@@ -61,10 +62,17 @@ public class ApplicationModule {
         return daoMaster.newSession();
     }
 
+
     @Singleton
     @Provides
-    public DataManager provideDataManager(StoreService storeService, GithubService githubService, PreferencesHelper preferencesHelper, DaoSession daoSession) {
-        return new DataManager(storeService, githubService, preferencesHelper, daoSession);
+    public InnerFileUtil provideInnerFileUtil(Context context) {
+        return new InnerFileUtil(context);
+    }
+
+    @Singleton
+    @Provides
+    public DataManager provideDataManager(StoreService storeService, GithubService githubService, PreferencesHelper preferencesHelper, DaoSession daoSession, InnerFileUtil innerFileUtil) {
+        return new DataManager(storeService, githubService, preferencesHelper, daoSession, innerFileUtil);
     }
 
     @Singleton

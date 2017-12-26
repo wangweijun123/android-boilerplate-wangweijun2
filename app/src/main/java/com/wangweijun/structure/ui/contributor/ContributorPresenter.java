@@ -132,7 +132,6 @@ public class ContributorPresenter extends BasePresenter<BlacklistMvpView> {
      * 3 更新UI
      */
     public void load() {
-
         mDataManager.loadContributorsFromDB()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -179,6 +178,57 @@ public class ContributorPresenter extends BasePresenter<BlacklistMvpView> {
     }
 
 
+    /**
+     * 1 读取数据库缓存(io)，返回显示缓存(ui)
+     * 2 网络加载,更新数据库(io)
+     * 3 更新UI
+     */
+    public void load2() {
+        mDataManager.loadContributorsFromInnerFile()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Consumer<List<Contributor>>() {
+                    @Override
+                    public void accept(@NonNull List<Contributor> contributors) throws Exception {
+                        Log.i("wang", "缓存返回 accept tid:" + Thread.currentThread().getId() + " contributors:"+contributors);
+                        if (contributors != null) {
+                            for (Contributor contributor : contributors) {
+                                Log.i("wang", contributor.toString());
+                            }
+                        }
+                    }
+                }).observeOn(Schedulers.io())
+                .flatMap(new Function<List<Contributor>, ObservableSource<List<Contributor>>>() {
+                    @Override
+                    public ObservableSource<List<Contributor>> apply(@NonNull List<Contributor> contributors) throws Exception {
+                        return mDataManager.syncContributorsSaveToInnerFile();
+                    }
+                }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Contributor>>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        Log.i("wang", "onSubscribe tid:" + Thread.currentThread().getId());
+                    }
+
+                    @Override
+                    public void onNext(@NonNull List<Contributor> list) {
+                        Log.i("wang", "网络返回onNext tid:" + Thread.currentThread().getId() + ", size:" + list.size());
+                        for (Contributor contributor : list) {
+                            Log.i("wang", contributor.toString());
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        Log.i("wang", "onError tid:" + Thread.currentThread().getId());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("wang", "onComplete tid:" + Thread.currentThread().getId());
+                    }
+                });
+    }
 
 
 }

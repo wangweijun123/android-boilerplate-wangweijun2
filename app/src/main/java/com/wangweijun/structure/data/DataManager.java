@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.wangweijun.structure.data.local.db.Account;
 import com.wangweijun.structure.data.local.db.DaoSession;
+import com.wangweijun.structure.data.local.file.InnerFileUtil;
 import com.wangweijun.structure.data.local.pref.PreferencesHelper;
 import com.wangweijun.structure.data.model.AppDetailsModel;
 import com.wangweijun.structure.data.model.Contributor;
@@ -37,11 +38,14 @@ public class DataManager {
 
     private DaoSession mDaoSession;
 
-    public DataManager(StoreService storeService,GithubService githubService, PreferencesHelper preferencesHelper, DaoSession daoSession) {
+    private InnerFileUtil mInnerFileUtil;
+
+    public DataManager(StoreService storeService,GithubService githubService, PreferencesHelper preferencesHelper, DaoSession daoSession, InnerFileUtil innerFileUtil) {
         mStoreService = storeService;
         mGithubService = githubService;
         mPreferencesHelper = preferencesHelper;
         mDaoSession = daoSession;
+        mInnerFileUtil = innerFileUtil;
     }
 
     public PreferencesHelper getPreferencesHelper() {
@@ -140,7 +144,7 @@ public class DataManager {
                 });
     }
 
-    public Observable<List<Contributor>> syncContributorsSaveToPref() {
+    public Observable<List<Contributor>> syncContributorsSaveToInnerFile() {
         return mGithubService.contributors("square", "retrofit")
                 .concatMap(new Function<List<Contributor>, ObservableSource<List<Contributor>>>() {
                     @Override
@@ -155,12 +159,28 @@ public class DataManager {
                                 for (Contributor contributor : contributors) {
                                     contributor.login = contributor.login+count;
                                 }
+                                mInnerFileUtil.write(contributors);
                                 emitter.onNext(contributors);
                                 emitter.onComplete();
                             }
                         });
                     }
                 });
+    }
+
+    public Observable<List<Contributor>> loadContributorsFromInnerFile() {
+        return Observable.create(new ObservableOnSubscribe<List<Contributor>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<List<Contributor>> emitter) throws Exception {
+                Log.i("wang", "query inner file subscribe  tid:"+Thread.currentThread().getId());
+                List<Contributor> cacheList = mInnerFileUtil.read();
+                if (cacheList != null) {
+                    Log.i("wang", "cacheList size :"+cacheList.size());
+                }
+                emitter.onNext(cacheList);
+                emitter.onComplete();
+            }
+        });
     }
 
     public Observable<Account> insertAccount(final Account account) {
