@@ -5,7 +5,6 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.wangweijun.structure.data.local.pref.PreferencesHelper;
 import com.wangweijun.structure.data.model.AppDetailsModel;
 import com.wangweijun.structure.data.model.IResponse;
 import com.wangweijun.structure.data.remote.StoreService;
@@ -26,23 +25,13 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class ExampleInstrumentedTest {
+public class StoreServiceTest {
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
         Log.i("wang", "log xxx daoSession:");
         assertEquals("com.wangweijun.structure", appContext.getPackageName());
-    }
-
-    @Test
-    public void testPreferencesHelper() throws Exception {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
-        PreferencesHelper helper = new PreferencesHelper(InstrumentationRegistry.getTargetContext());
-        helper.setScore(5);// 数据进入了手手机app
-        float score = helper.getScore();
-        Log.i("wang","score:"+score);
     }
 
     @Test
@@ -72,6 +61,7 @@ public class ExampleInstrumentedTest {
                 });;
 
     }
+
 
     public StoreService provideStoreService() {
         return StoreService.Creator.newStoreService();
