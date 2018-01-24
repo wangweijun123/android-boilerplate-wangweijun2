@@ -71,6 +71,12 @@ public class GameFragment extends BaseFragment implements GameMvpView{
         getRankApps();
     }
 
+    @Override
+    public void onDestroy() {
+        gamePresenter.detachView();
+        super.onDestroy();
+    }
+
     private void getRankApps() {
         Log.i(TAG, this+ "  isVisibleToUser: "+isVisibleToUser+" root : " + root + ", isLoading:"+isLoading+", hasData ？"+gameAdapter);
         // 1, 用户可见  2, view 已经初始化 3, 第一页还没加载 4, 适配器中是否已经存在数据

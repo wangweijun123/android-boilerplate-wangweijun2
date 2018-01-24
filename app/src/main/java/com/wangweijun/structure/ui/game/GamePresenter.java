@@ -8,6 +8,7 @@ import com.wangweijun.structure.data.model.IResponse;
 import com.wangweijun.structure.data.model.RankListMiddle;
 import com.wangweijun.structure.data.model.RankListModel;
 import com.wangweijun.structure.ui.base.BasePresenter;
+import com.wangweijun.structure.util.RxUtil;
 
 import java.util.List;
 
@@ -27,19 +28,29 @@ public class GamePresenter extends BasePresenter<GameMvpView> {
 
     DataManager mDataManager;
 
+    private Disposable mDisposable;
+
     @Inject
     public GamePresenter(DataManager dataManager) {
         mDataManager = dataManager;
     }
 
+    @Override
+    public void detachView() {
+        if (mDisposable != null) mDisposable.dispose();
+        super.detachView();
+    }
+
     public void getRankApps() {
         checkViewAttached();
+        RxUtil.dispose(mDisposable);
         mDataManager.getRankApps("40", "20", "RANK_HOT")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<IResponse<RankListModel>>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
+                        mDisposable = d;
                         getMvpView().showLoading();
                     }
                     @Override
