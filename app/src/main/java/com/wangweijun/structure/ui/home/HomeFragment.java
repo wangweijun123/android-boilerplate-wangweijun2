@@ -10,10 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.wangweijun.structure.R;
 import com.wangweijun.structure.data.model.BaseModel;
+import com.wangweijun.structure.data.model.IResponse;
+import com.wangweijun.structure.data.model.RankListModel;
 import com.wangweijun.structure.ui.base.BaseFragment;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -77,6 +83,7 @@ public class HomeFragment extends BaseFragment implements HomeMvpView{
         // 1, 用户可见  2, view 已经初始化 3, 第一页还没加载 4, 适配器中是否已经存在数据
         if (isVisibleToUser && root != null && !isLoading && homeAdapter != null && !homeAdapter.hasData()) {
             homePresenter.getHomePageRequest();
+            parseReturnJson();
         }
     }
 
@@ -133,5 +140,20 @@ public class HomeFragment extends BaseFragment implements HomeMvpView{
     @Override
     public void showDataLoadSuccess(List<BaseModel> list) {
         homeAdapter.addModels(list);
+    }
+
+    public void parseReturnJson() {
+        try {
+            InputStream inputStream = getContext().getAssets().open("json_return.txt");
+            byte buffer[] = new byte[8*1024];
+            int numb = inputStream.read(buffer);
+            String result = new String(buffer, 0, numb, "utf-8");
+            Log.i("wang","result:"+result);
+            IResponse<RankListModel> iResponse = new Gson().fromJson(result, new TypeToken<IResponse<RankListModel>>() {
+            }.getType());
+            Log.i("wang","code:"+iResponse.getCode());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

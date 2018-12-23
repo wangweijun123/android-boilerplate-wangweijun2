@@ -2,6 +2,10 @@
 
 buildscript {
     repositories {
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
         jcenter()
         mavenCentral() // add repository
     }
@@ -16,6 +20,10 @@ buildscript {
 
 allprojects {
     repositories {
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
         jcenter()
     }
 }
